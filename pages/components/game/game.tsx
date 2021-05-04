@@ -172,9 +172,11 @@ export default function Game() {
     const sPos = piece.startPos;
     const cPos = piece.currentPos;
     return (
-      <div key={i} data-piece-index={i}
+      <div key={i}
+        data-piece-index={i}
+        className={piece.hidden ? styles.hidden : ''}
         style={{
-          display: piece.hidden ? 'none' : 'block',
+          // display: piece.hidden ? 'none' : 'block',
           left: (cPos.x - sPos.x) * pSize.x,
           top: (cPos.y - sPos.y) * pSize.y,
           backgroundImage: targetImage,
@@ -197,7 +199,9 @@ export default function Game() {
         </div>
         <div className={styles.message}>{message}</div>
       </div>
-      <button onClick={shuffleButtonClickHandler}>Shuffle</button>
+      <button
+        className={styles.shuffleButton}
+        onClick={shuffleButtonClickHandler}>Shuffle</button>
     </div>
   )
 }
