@@ -1,5 +1,5 @@
 import styles from './game.module.scss'
-import { useEffect, useState, MouseEvent } from 'react'
+import { useEffect, useState, MouseEvent, useRef } from 'react'
 
 class Vector2d {
   x: number;
@@ -8,6 +8,7 @@ class Vector2d {
     this.x = x;
     this.y = y;
   }
+  eq = (other: Vector2d): boolean => other && other.x == this.x && other.y == this.y;
 }
 class Piece {
   startPos: Vector2d;
@@ -25,6 +26,7 @@ export default function Game() {
   const [pieces, setPieces] = useState<Piece[]>([])
   const [score, setScore] = useState(0)
   const [message, setMessage] = useState('')
+
   ///init
   useEffect(() => {
     const W = 3
@@ -82,7 +84,7 @@ export default function Game() {
   const shuffleButtonClickHandler = () => {
     startGame();
   }
-  const startGame = () => {
+  const startGame = async () => {
     /// set score to 0
     setScore(0)
 
@@ -94,7 +96,7 @@ export default function Game() {
 
     /// shuffle pieces
     //shufflePieces(25)
-    betterShuffle()
+    await betterShuffle()
 
     /// make sure the ui is updated
     setPieces([...pieces])
@@ -103,27 +105,13 @@ export default function Game() {
   }
 
   /**
-   * stupid shuffle routine
-   * @param iterations defaults to 25
-   */
-  const shufflePieces = (iterations: number = 25) => {
-    const hiddenPiece = pieces[pieces.length - 1]
-    for (let n = 0; n < iterations; n++) {
-      for (let i = 0; i < pieces.length - 1; i++) {
-        const piece = pieces[i];
-        if ((Math.random() > .5) && canSwap(piece, hiddenPiece)) {
-          swap(piece, hiddenPiece)
-        }
-      }
-    }
-  }
-  /**
    * 
-   * @param iterations default: 25
+   * @param iterations default: 5
    * @param mustTouchAll default: true
    */
-  const betterShuffle = (iterations: number = 25, mustTouchAll: boolean = true) => {
+  const betterShuffle = async (iterations: number = 5, mustTouchAll: boolean = true) => {
     const hiddenPiece = pieces[pieces.length - 1]
+    let prevHidden: Vector2d
     const W = 3
     const H = 3
     for (let n = 0; n < iterations; n++) {
@@ -131,21 +119,42 @@ export default function Game() {
       do {
         const neighborPositions = []
         const pos = hiddenPiece.currentPos
-        if (pos.x > 0)
-          neighborPositions.push(new Vector2d(pos.x - 1, pos.y))
-        if (pos.y > 0)
-          neighborPositions.push(new Vector2d(pos.x, pos.y - 1))
-        if (pos.x < W - 1)
-          neighborPositions.push(new Vector2d(pos.x + 1, pos.y))
-        if (pos.y < H - 1)
-          neighborPositions.push(new Vector2d(pos.x, pos.y + 1))
+        if (pos.x > 0) {
+          let t = new Vector2d(pos.x - 1, pos.y)
+          if (!t.eq(prevHidden))
+            neighborPositions.push(t)
+        }
+        if (pos.y > 0) {
+          let t = new Vector2d(pos.x, pos.y - 1)
+          if (!t.eq(prevHidden))
+            neighborPositions.push(t)
+        }
+        if (pos.x < W - 1) {
+          let t = new Vector2d(pos.x + 1, pos.y)
+          if (!t.eq(prevHidden))
+            neighborPositions.push(t)
+
+        }
+        if (pos.y < H - 1) {
+          let t = new Vector2d(pos.x, pos.y + 1)
+          if (!t.eq(prevHidden))
+            neighborPositions.push(t)
+
+        }
         const selectedMove = neighborPositions[Math.floor(Math.random() * neighborPositions.length)]
         const piece = getPieceAtPos(selectedMove)
+        prevHidden = hiddenPiece.currentPos
         swap(piece, hiddenPiece)
         touched[piece.index] = 1
+
       } while (mustTouchAll && Object.keys(touched).length + 1 < pieces.length)
+        /// make sure the ui is updated
+        setPieces([...pieces])
+        await delay(200);
     }
   }
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
   const getPieceAtPos = (pos: Vector2d) => {
     for (let i = 0; i < pieces.length; i++) {
       const piece = pieces[i];

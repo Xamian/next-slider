@@ -8,7 +8,7 @@
     padding: 5px 25px;
   }
   .board {
-    background-color: aquamarine;
+    background-color: rgba(245, 230, 230, 0.25);
 
     width: 600px;
     height: 600px;
@@ -23,7 +23,7 @@
         // height: 200px;
         position: absolute;
         background-size: cover;
-        transition: left 250ms, top 250ms, opacity 1000ms;
+        transition: left 200ms ease, top 200ms ease, opacity 1000ms;
         &.hidden {
           opacity: 0;
         }
