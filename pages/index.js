@@ -13,9 +13,9 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
+        {/* <h1 className={styles.title}>
           next-slider
-        </h1>
+        </h1> */}
 
         {/* <p className={styles.description}>
           try if you can guess the rules.
