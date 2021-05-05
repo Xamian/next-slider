@@ -148,9 +148,9 @@ export default function Game() {
         touched[piece.index] = 1
 
       } while (mustTouchAll && Object.keys(touched).length + 1 < pieces.length)
-        /// make sure the ui is updated
-        setPieces([...pieces])
-        await delay(200);
+      /// make sure the ui is updated
+      setPieces([...pieces])
+      await delay(200);
     }
   }
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -186,15 +186,18 @@ export default function Game() {
         className={piece.hidden ? styles.hidden : ''}
         style={{
           // display: piece.hidden ? 'none' : 'block',
-          left: (cPos.x - sPos.x) * pSize.x,
-          top: (cPos.y - sPos.y) * pSize.y,
+          left: `${(cPos.x - sPos.x) * 33}%`,
+          top: `${(cPos.y - sPos.y) * 33}%`,
           backgroundImage: targetImage,
-          width: '600px',
-          height: '600px',
-          clip: `rect(${sPos.y * pSize.y}px,
-        ${(sPos.x + 1) * pSize.x}px,
-        ${(sPos.y + 1) * pSize.y}px,
-        ${sPos.x * pSize.x}px)`
+          width: '100%',
+          height: '100%',
+          // clipPath: `polygon(0 0, 33% 0%, 33% 33%, 0 33%)`,
+          // clip: `rect(${sPos.y * pSize.y}px, ${(sPos.x + 1) * pSize.x}px, ${(sPos.y + 1) * pSize.y}px, ${sPos.x * pSize.x}px)`
+          clipPath: `polygon(
+            ${sPos.x * 33}% ${sPos.y * 33}%,
+            ${(sPos.x + 1) * 33}% ${sPos.y * 33}%,
+            ${(sPos.x + 1) * 33}% ${(sPos.y + 1) * 33}%,
+            ${sPos.x * 33}% ${(sPos.y + 1) * 33}%)`
         }}></div>
     );
   })
@@ -202,15 +205,17 @@ export default function Game() {
     <div className={styles.game}>
       <div className={styles.score}>{score}</div>
       <div className={styles.board} onClick={boardClickHandler}>
-        <div className={styles.target} style={{ backgroundImage: targetImage }}></div>
         <div className={styles.pieces}>
           {piecesAsDivs}
         </div>
         <div className={styles.message}>{message}</div>
       </div>
-      <button
-        className={styles.shuffleButton}
-        onClick={shuffleButtonClickHandler}>Shuffle</button>
+      <div className={styles.gameControl}>
+        <div className={styles.target} style={{ backgroundImage: targetImage }}></div>
+        <button
+          className={styles.shuffleButton}
+          onClick={shuffleButtonClickHandler}>Shuffle</button>
+      </div>
     </div>
   )
 }

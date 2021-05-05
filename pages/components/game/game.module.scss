@@ -1,19 +1,15 @@
 .game {
   text-align: center;
+  margin: 5vw;
   .score {
     font-size: large;
   }
-  .shuffleButton {
-    font-size: 2em;
-    margin: 10px 0px;
-    padding: 5px 25px;
-  }
   .board {
-    background-color: rgba(245, 230, 230, 0.25);
-
-    width: 600px;
-    height: 600px;
     position: relative;
+    width: 90vw;
+    height: 90vw;
+    background-color: rgba(245, 230, 230, 0.25);
+    margin-left: 0.5vw;
     .pieces {
       position: relative;
       overflow: hidden;
@@ -35,18 +31,38 @@
       position: absolute;
       left: 0;
       right: 0;
-      top: 300px;
+      top: 50%;
       text-align: center;
       color: rgb(224, 224, 224);
       text-shadow: 2px 2px 5px black;
     }
   }
-  .target {
-    position: absolute;
-    left: -220px;
-    top: 0;
-    background-size: cover;
-    width: 200px;
-    height: 200px;
+  .gameControl {
+    display: flex;
+    flex-direction: row;
+    .target {
+      flex: 1 1;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      width: 30vw;
+      height: 30vw;
+      margin: 5vw 5vw 5vw 0;
+    }
+    .shuffleButton {
+      flex: 2;
+      font-size: 2em;
+      margin: 5vw 0;
+    }
+  }
+}
+
+@media (min-width: 600px) {
+  .game {
+    .board {
+      width: 600px;
+      height: 600px;
+      margin: 0 auto;
+    }
   }
 }
