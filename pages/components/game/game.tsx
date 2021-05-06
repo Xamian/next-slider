@@ -26,6 +26,7 @@ export default function Game() {
   const [pieces, setPieces] = useState<Piece[]>([])
   const [score, setScore] = useState(0)
   const [message, setMessage] = useState('')
+  // const [dif, setDif] = useState(0)
 
   ///init
   useEffect(() => {
@@ -109,7 +110,7 @@ export default function Game() {
    * @param iterations default: 5
    * @param mustTouchAll default: true
    */
-  const betterShuffle = async (iterations: number = 5, mustTouchAll: boolean = true) => {
+  const betterShuffle = async (iterations: number = 5, mustTouchAll: boolean = true, minDif: number = 20) => {
     const hiddenPiece = pieces[pieces.length - 1]
     let prevHidden: Vector2d
     const W = 3
@@ -146,13 +147,17 @@ export default function Game() {
         prevHidden = hiddenPiece.currentPos
         swap(piece, hiddenPiece)
         touched[piece.index] = 1
-
-      } while (mustTouchAll && Object.keys(touched).length + 1 < pieces.length)
+      } while (calcDif() < minDif || (mustTouchAll && Object.keys(touched).length + 1 < pieces.length))
+      // setDif(calcDif())
       /// make sure the ui is updated
       setPieces([...pieces])
       await delay(200);
     }
   }
+  const calcDif = () => pieces.reduce((acc, piece) => {
+    acc += Math.abs(piece.currentPos.x - piece.startPos.x) + Math.abs(piece.currentPos.y - piece.startPos.y)
+    return acc;
+  }, 0)
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
   const getPieceAtPos = (pos: Vector2d) => {
@@ -173,6 +178,7 @@ export default function Game() {
     const temp = piece.currentPos
     piece.currentPos = piece2.currentPos
     piece2.currentPos = temp
+    // setDif(calcDif())
   }
 
   const targetImage = 'url(images/thispersondoesnotexist.com/image1.jpg)'
@@ -204,6 +210,7 @@ export default function Game() {
   return (
     <div className={styles.game}>
       <div className={styles.score}>{score}</div>
+      {/* <div>dif: {dif}</div> */}
       <div className={styles.board} onClick={boardClickHandler}>
         <div className={styles.pieces}>
           {piecesAsDivs}
