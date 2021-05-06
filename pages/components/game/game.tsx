@@ -9,6 +9,7 @@ class Vector2d {
     this.y = y;
   }
   eq = (other: Vector2d): boolean => other && other.x == this.x && other.y == this.y;
+  simpleDif = (other: Vector2d) => Math.abs(this.x - other.x) + Math.abs(this.y - other.y)
 }
 class Piece {
   startPos: Vector2d;
@@ -151,12 +152,12 @@ export default function Game() {
       // setDif(calcDif())
       /// make sure the ui is updated
       setPieces([...pieces])
-      await delay(200);
+      await delay(200)
     }
   }
-  const calcDif = () => pieces.reduce((acc, piece) => {
-    acc += Math.abs(piece.currentPos.x - piece.startPos.x) + Math.abs(piece.currentPos.y - piece.startPos.y)
-    return acc;
+  const calcDif = () => pieces.reduce((acc: number, piece: Piece) => {
+    acc += piece.currentPos.simpleDif(piece.startPos)
+    return acc
   }, 0)
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -184,8 +185,8 @@ export default function Game() {
   const targetImage = 'url(images/thispersondoesnotexist.com/image1.jpg)'
   const pSize = new Vector2d(200, 200)
   const piecesAsDivs = pieces.map((piece, i) => {
-    const sPos = piece.startPos;
-    const cPos = piece.currentPos;
+    const sPos = piece.startPos
+    const cPos = piece.currentPos
     return (
       <div key={i}
         data-piece-index={i}
