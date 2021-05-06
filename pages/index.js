@@ -26,6 +26,7 @@ export default function Home() {
       </main>
 
       <footer className={styles.footer}>
+        <span>v1.0.1</span><br />
         <span>Se flere tåbeligheder på <a href="https://max-it.dk/">max-it.dk</a></span><br />
         Image from <a target="_blank" href="https://thispersondoesnotexist.com/">thispersondoesnotexist.com</a><br />
           Powered by{' '}
